@@ -9,3 +9,9 @@ sayMyName('Haisenberg')
 function throwError(message: string): never {
     throw new Error(message)
 }
+
+function getName(firstName: string, lastName?: string) {
+    return console.log (firstName + ' ' + lastName)
+}
+
+getName('Vlad')

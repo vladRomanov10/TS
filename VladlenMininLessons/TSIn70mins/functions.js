@@ -8,3 +8,7 @@ sayMyName('Haisenberg');
 function throwError(message) {
     throw new Error(message);
 }
+function getName(firstName, lastName) {
+    return console.log(firstName + ' ' + lastName);
+}
+getName('Vlad');

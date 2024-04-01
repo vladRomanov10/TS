@@ -21,3 +21,24 @@ class Person {
   
 let tom = new Person("Tom", 24);
 tom.print();
+//Абстрактные классы
+abstract class Figure {
+    abstract x: number
+    abstract y: number
+    abstract getArea(): void
+}
+
+class Rectangle extends Figure {
+    constructor(public x: number, public y: number, public width: number, public height: number) {
+        super()
+    }
+
+    getArea(): void {
+        const area = this.width * this.height
+        console.log(`Площадь фигруы: ${area}`)
+    }
+}
+
+const rectangle = new Rectangle(10, 50, 100, 50)
+
+rectangle.getArea()

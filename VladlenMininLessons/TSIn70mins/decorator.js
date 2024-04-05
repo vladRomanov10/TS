@@ -68,7 +68,7 @@ var User1 = function () {
     return User1 = _classThis;
 }();
 var user1 = new User1('Vlad');
-console.log(user1);
+console.log(user1.name);
 //Декоратор метода
 function readable(onlyRead) {
     return function (target, propertyKey, descriptor) {
@@ -98,7 +98,134 @@ var User2 = function () {
         _a;
 }();
 var user2 = new User2('Serg');
-// user2.printName = function() {
-//     console.log('Method has been changed')
-// }
+user2.printName = function () {
+    console.log('Method has been changed');
+};
 console.log(user2.printName());
+//Параметры и выходной результат метода
+function log(target, method, descriptor) {
+    var originalMethod = descriptor.value;
+    descriptor.value = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        console.log(JSON.stringify(args));
+        var returnValue = originalMethod.apply(this, args);
+        console.log("".concat(JSON.stringify(args), " => ").concat(returnValue));
+        return returnValue;
+    };
+}
+var Calculator = function () {
+    var _a;
+    var _instanceExtraInitializers = [];
+    var _add_decorators;
+    return _a = /** @class */ (function () {
+            function Calculator() {
+                __runInitializers(this, _instanceExtraInitializers);
+            }
+            Calculator.prototype.add = function (x, y) {
+                return x + y;
+            };
+            return Calculator;
+        }()),
+        (function () {
+            var _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            _add_decorators = [log];
+            __esDecorate(_a, null, _add_decorators, { kind: "method", name: "add", static: false, private: false, access: { has: function (obj) { return "add" in obj; }, get: function (obj) { return obj.add; } }, metadata: _metadata }, null, _instanceExtraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+}();
+var calc = new Calculator;
+calc.add(10, 15);
+//Дескрипторы свойств
+function format() {
+    return function (target, propertyKey) {
+        var value;
+        var getter = function () {
+            return 'Mr/Ms ' + value;
+        };
+        var setter = function (newVal) {
+            if (newVal.length > 2) {
+                value = newVal;
+            }
+        };
+        Object.defineProperty(target, propertyKey, {
+            get: getter,
+            set: setter
+        });
+    };
+}
+var User3 = function () {
+    var _a;
+    var _name_decorators;
+    var _name_initializers = [];
+    var _name_extraInitializers = [];
+    return _a = /** @class */ (function () {
+            function User3(name) {
+                this.name = __runInitializers(this, _name_initializers, void 0);
+                __runInitializers(this, _name_extraInitializers);
+                this.name = name;
+            }
+            User3.prototype.print = function () {
+                console.log(this.name);
+            };
+            return User3;
+        }()),
+        (function () {
+            var _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            _name_decorators = [format()];
+            __esDecorate(null, null, _name_decorators, { kind: "field", name: "name", static: false, private: false, access: { has: function (obj) { return "name" in obj; }, get: function (obj) { return obj.name; }, set: function (obj, value) { obj.name = value; } }, metadata: _metadata }, _name_initializers, _name_extraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+}();
+var user3 = new User3('Vlad');
+user3.print();
+user3.name = 'Zopa';
+user3.print();
+//Декоратор досутпа(аксессора)
+function validator(target, propertyKey, descriptor) {
+    var oldSet = descriptor.set;
+    descriptor.set = function (value) {
+        if (value === "admin") {
+            throw new Error("Invalid value");
+        }
+        if (oldSet !== undefined)
+            oldSet.call(this, value);
+    };
+}
+var User = function () {
+    var _a;
+    var _instanceExtraInitializers = [];
+    var _set_name_decorators;
+    return _a = /** @class */ (function () {
+            function User(name) {
+                this._name = __runInitializers(this, _instanceExtraInitializers);
+                this.name = name;
+            }
+            Object.defineProperty(User.prototype, "name", {
+                get: function () {
+                    return this._name;
+                },
+                set: function (n) {
+                    this._name = n;
+                },
+                enumerable: false,
+                configurable: true
+            });
+            return User;
+        }()),
+        (function () {
+            var _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            _set_name_decorators = [validator];
+            __esDecorate(_a, null, _set_name_decorators, { kind: "setter", name: "name", static: false, private: false, access: { has: function (obj) { return "name" in obj; }, set: function (obj, value) { obj.name = value; } }, metadata: _metadata }, null, _instanceExtraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+}();
+var tom = new User("Tom");
+console.log(tom.name);
+tom.name = "admin";
+console.log(tom.name);
